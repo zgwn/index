@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园网址导航</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('https://xlgy.com/uploadfiles/202203/20220302161818362.png') no-repeat center center fixed;
+            background-size: 50% auto;
+            padding: 20px;
+            position: relative;
+        }
+        /* 添加半透明遮罩层 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(227, 242, 253, 0.96);
+            z-index: -1;
+        }
+        .search-container {
+            max-width: 800px;
+max-height:80px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .accordion-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .accordion-item {
+            background-color: #fff;
+            border: none;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .accordion-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        .accordion-button {
+            padding: 15px 20px;
+            background-color: #fff;
+            border-radius: 8px !important;
+            font-weight: 500;
+            color: #1976D2;
+            transition: all 0.3s ease;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #fff;
+            color: #1565C0;
+            box-shadow: none;
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: transparent;
+        }
+        .accordion-button::after {
+            background-size: 1.2rem;
+            transition: all 0.3s ease;
+            color: #1976D2;
+        }
+        .accordion-body {
+            background-color: #F8FAFF;
+            padding: 20px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .site-link {
+            color: #1976D2;
+            text-decoration: none;
+            padding: 8px 16px;
+            background-color: #fff;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(25, 118, 210, 0.1);
+        }
+        .site-link:hover {
+            background-color: #1976D2;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(25, 118, 210, 0.2);
+        }
+        .btn-outline-primary {
+            border-color: #90CAF9;
+            color: #757575;
+            background-color: transparent;
+            font-size: 0.9em;
+            padding: 6px 12px;
+            margin: 3px;
+        }
+        .btn-outline-primary:hover {
+            background-color: #F5F9FF;
+            border-color: #90CAF9;
+            color: #1976D2;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .input-group-text {
+            background-color: #F5F9FF;
+            border-color: #BBDEFB;
+            color: #1976D2;
+        }
+        .form-control:focus {
+            border-color: #90CAF9;
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+        }
+        #jnkc {
+            color: #1976D2;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        /* 添加分类图标 */
+        .accordion-button::before {
+            content: '';
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.7;
+        }
+        /* 为每个分类添加不同的图标 */
+        #headingOne .accordion-button::before {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%231976D2" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg>');
+        }
+        #headingTwo .accordion-button::before {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%231976D2" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/></svg>');
+        }
+        #headingThree .accordion-button::before {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%231976D2" viewBox="0 0 16 16"><path d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"/></svg>');
+        }
+        #headingFour .accordion-button::before {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%231976D2" viewBox="0 0 16 16"><path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/></svg>');
+        }
+        .search-buttons {
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <form id="searchForm" action="https://www.baidu.com/s" method="get" target="_blank">
+            <div class="input-group">
+                <span class="input-group-text">百度</span>
+                <input type="text" class="form-control" name="wd" id="search" placeholder="输入关键词搜索...">
+                <button class="btn btn-primary" type="submit">搜索</button>
+            </div>
+            <div class="search-buttons" style="opacity: 0;">
+                <button type="button" class="btn btn-outline-primary" data-search="baidu">百度</button>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="accordion accordion-container" id="navigationAccordion">
+        <!-- 日常生活 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                    日常生活
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#navigationAccordion">
+                <div class="accordion-body">
+                    <a href="https://www.douyin.com/" class="site-link" target="_blank">抖音</a>
+                    <a href="https://www.huya.com/" class="site-link" target="_blank">虎牙直播</a>
+                    <a href="http://www.bilibili.com/" class="site-link" target="_blank">B站</a>
+                    <a href="https://www.xl720.com/" class="site-link" target="_blank">迅雷下载</a>
+<a href="https://chat.deepseek.com/" class="site-link" target="_blank">DeepSeek</a>
+<a href="https://kimi.moonshot.cn/?data_source=tracer&utm_campaign=TR_D0pcUf08&utm_content=&utm_medium=%E7%99%BE%E5%BA%A6&utm_source=baidu_search&utm_term=
+" class="site-link" target="_blank">Kimi</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 校园相关 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                    校园相关
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#navigationAccordion">
+                <div class="accordion-body">
+                    <a href="https://www.xlgy.com" class="site-link" target="_blank">学校官网</a>
+                    <a href="http://tc.xlgy.com" class="site-link" target="_blank">身份认证</a>
+                    <a href="https://hnlgzy.jw.chaoxing.com/admin/login" class="site-link" target="_blank">教务系统</a>
+                    <a href="https://hnlgzy.fanya.chaoxing.com/portal" class="site-link" target="_blank">教学平台</a>
+                    <a href="http://my.hnsoftedu.com/home" class="site-link" target="_blank">软件大学</a>
+                    <a href="https://test.ustc.edu.cn/" class="site-link" target="_blank">网络测速</a>
+                    <a href="https://www.educoder.net/" class="site-link" target="_blank">实训平台</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快捷入口 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                    快捷入口
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#navigationAccordion">
+                <div class="accordion-body">
+                    <a href="http://dcp.xinnet.com/Modules/agent/domain/domain_manage.jsp" class="site-link" target="_blank">域名管理</a>
+                    <a href="http://172.16.100.140:8080" class="site-link" target="_blank">无线管理</a>
+                    <a href="http://172.16.100.252" class="site-link" target="_blank">网络管控</a>
+                    <a href="http://172.16.100.231:8080/sam/" class="site-link" target="_blank">SAM平台</a>
+                    <a href="http://www.xlgy.com/rums/rums.jsp" class="site-link" target="_blank">官网后台</a>
+                    <a href="https://aq.hnedu.cn/login" class="site-link" target="_blank">信息上报</a>
+                    <a href="http://mima.wiicha.com/?cate=123&length=8&num=10&spaciel=%40&exclude_str=0OoIl1" class="site-link" target="_blank">生成密码</a>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- 其他小站 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                    其它小站
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#navigationAccordion">
+                <div class="accordion-body"> 
+                    <a href="https://mlook.mobi" class="site-link" target="_blank">书本在线</a>
+                    <a href="http://172.16.100.124:56789/" class="site-link" target="_blank">小雅视频</a>
+					<a href="https://wanxiang.aliyun.com/" class="site-link" target="_blank">通义万相</a>
+<a href="https://ra2web.com/" class="site-link" target="_blank">网页红警</a>
+<a href="https://play-cs.com/" class="site-link" target="_blank">webCS</a>
+<a href="https://fakeupdate.net/win7/" class="site-link" target="_blank">系统升级</a>
+<a href="https://xbeibeix.com/app/tiktok" class="site-link" target="_blank">视频下载</a>
+<a href="https://www.maiqiye.com/" class="site-link" target="_blank">FreeOK</a>
+<a href="https://pf.bigpixel.cn/zh-CN.html" class="site-link" target="_blank">千亿像</a>
+<a href="https://www.yikm.net/" class="site-link" target="_blank">复古游戏</a>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4" id="jnkc"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 时间显示
+        setInterval(() => {
+            const date = new Date();
+            const weekDay = '日一二三四五六'.charAt(date.getDay());
+            document.getElementById('jnkc').innerHTML = date.toLocaleString() + ' 星期' + weekDay;
+        }, 1000);
+
+        // 搜索引擎切换
+        const searchEngines = {
+            baidu: { url: 'https://www.baidu.com/s', param: 'wd' },
+            google: { url: 'https://www.google.com/search', param: 'q' },
+            zhihu: { url: 'https://www.zhihu.com/search', param: 'q' },
+            weixin: { url: 'http://weixin.sogou.com/weixin', param: 'query' },
+            taobao: { url: 'https://s.taobao.com/search', param: 'q' },
+            jd: { url: 'https://search.jd.com/Search', param: 'keyword' },
+            weibo: { url: 'https://s.weibo.com/weibo', param: 'q' },
+            douban: { url: 'https://www.douban.com/search', param: 'q' },
+            music: { url: 'http://music.hao123.com/search', param: 'key' },
+            map: { url: 'https://ditu.amap.com/search', param: 'query' }
+        };
+
+        document.querySelectorAll('[data-search]').forEach(button => {
+            button.addEventListener('click', function() {
+                const searchType = this.dataset.search;
+                const engine = searchEngines[searchType];
+                if (engine) {
+                    const form = document.getElementById('searchForm');
+                    const input = document.getElementById('search');
+                    form.action = engine.url;
+                    input.name = engine.param;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
